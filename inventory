@@ -1,0 +1,17 @@
+[osd_hosts]
+osd01.example.com
+osd02.example.com
+osd03.example.com
+osd04.example.com
+osd05.example.com
+osd06.example.com
+osd07.example.com
+osd08.example.com
+osd09.example.com
+osd10.example.com
+
+
+[osd_mons]
+osd01.example.com
+osd02.example.com
+osd03.example.com

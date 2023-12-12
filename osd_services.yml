@@ -1,0 +1,49 @@
+---
+
+- hosts: osd_hosts
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Generate a list of OSDs on the host
+      ansible.builtin.raw: |
+        if [[ ! -e /tmp/services.txt ]]; then systemctl list-units |grep ceph-osd |awk '{print $1}' >> /tmp/services.txt; fi
+      tags:
+      - stop
+    
+    - name: Register a list of services discovered on the host
+      ansible.builtin.raw: |
+        cat /tmp/services.txt
+      register: osd_service
+      tags:
+      - start
+      - stop
+
+    - name: Display a list of discovered services to STDOUT
+      ansible.builtin.debug:
+        msg: "The following services were found on {{ inventory_hostname }}: {{ osd_service.stdout }}"
+      tags:
+      - start
+      - stop
+
+    - name: Stop each of the OSDs on the host
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ osd_service.stdout_lines }}"
+      tags:
+      - stop
+
+    - name: Start each of the OSDs on the host
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+      tags:
+      - start
+
+    - name: Remove the services list
+      ansible.builtin.file:
+        path: /tmp/services.txt
+        state: absent
+      tags:
+      - start
