@@ -38,6 +38,7 @@
       ansible.builtin.service:
         name: "{{ item }}"
         state: started
+      register: result
       tags:
       - start
 
@@ -45,5 +46,7 @@
       ansible.builtin.file:
         path: /tmp/services.txt
         state: absent
+      when: 
+      - result is not failed
       tags:
       - start
