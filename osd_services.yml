@@ -21,7 +21,7 @@
 
     - name: Display a list of discovered services to STDOUT
       ansible.builtin.debug:
-        msg: "The following services were found on {{ inventory_hostname }}: {{ osd_service.stdout }}"
+        msg: "The following services were found on {{ inventory_hostname }}: {{ osd_service.stdout_lines }}"
       tags:
       - start
       - stop
